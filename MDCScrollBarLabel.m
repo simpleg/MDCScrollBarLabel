@@ -265,13 +265,12 @@ typedef enum {
     if (type == MDCClockHandTypeMinute && value > 60) {
         return;
     }
-
-    CGFloat angleForValue = type == MDCClockHandTypeHour ? 30.0 : 6.0f;
+    
+    CGFloat hoursAngle = (value /12.0) * M_PI * 2.0;
+    CGFloat minsAngle = (value / 60.0) * M_PI * 2.0;
+    
     __block UIImageView *handImageView =
         type == MDCClockHandTypeHour ? self.hourHandImageView : self.minuteHandImageView;
-
-    CGFloat end = value * DEGREES_TO_RADIANS(angleForValue);
-    end = inFuture ? end : -end;
 
     BOOL animationsEnabled = [UIView areAnimationsEnabled];
     [UIView setAnimationsEnabled:animated];
@@ -279,7 +278,7 @@ typedef enum {
                           delay:0.0f
                         options:UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
-                         handImageView.transform = CGAffineTransformMakeRotation(end);
+                         handImageView.transform = CGAffineTransformMakeRotation(type == MDCClockHandTypeHour? hoursAngle: minsAngle);
                      }
                      completion:nil];
     [UIView setAnimationsEnabled:animationsEnabled];
